@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 export SQLITE_URL="https://www.sqlite.org"
 #export SQLITE_HISTORY_URL="${SQLITE_URL}/chronology.html"
