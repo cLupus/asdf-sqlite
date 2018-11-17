@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-IFS=$'\n\t'
 
 source "$(dirname "$0")/utils.sh"
 WORKING_DIR=${WORKING_DIR}
@@ -21,7 +20,6 @@ _add_padding () {
     if [[ ${#1} == '2' ]]; then
         printf '%d%01d' ${1}
     fi
-
 }
 
 get_long_version () {
@@ -29,7 +27,6 @@ get_long_version () {
     read -r major minor patch fix <<<$(echo ${version} | tr '.' ' ' )
 
     echo "${major}`_add_padding ${minor}``_add_padding ${patch} `"
-
 }
 
 get_source () {
