@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/utils.sh"
+WORKING_DIR=${WORKING_DIR}
+
+get_release_year () {
+    local version=$1
+    get_sqlite_url releaselog/`echo ${version} | tr '.' '_'`.html \
+    | grep "<title>.*</title>" \
+    | sed -E 's|.*On ([0-9]{4})-.*|\1|g'
+}
+
+_add_padding () {
+    if [[ ${#1} == '1' ]]; then
+        printf '%d%02d' ${1}
+    fi
+    if [[ ${#1} == '2' ]]; then
+        printf '%d%01d' ${1}
+    fi
+
+}
+
+get_long_version () {
+    local version=$1
+    read -r major minor patch fix <<<$(echo ${version} | tr '.' ' ' )
+
+    echo "${major}`_add_padding ${minor}``_add_padding ${patch} `"
+
+}
+
+get_source () {
+    local version=$1
+    local long_version=`get_long_version ${version}`
+    local release_year=`get_release_year ${version}`
+
+    local sqlite_tarball="sqlite-autoconf-${long_version}.tar.gz"
+
+    cd ${WORKING_DIR}
+    curl --silent "https://www.sqlite.org/${release_year}/${sqlite_tarball}" --output "${sqlite_tarball}"
+    tar -xf ${sqlite_tarball}
+}
+
+compile_source () {
+    local install_path=$1
+    cd ${WORKING_DIR}
+    ./configure --prefix=${install_path}  # TODO: Add more options
+    make
+    make install
+}
+
+install_sqlite () {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  if [[ ${install_type} != 'version' ]]; then
+    echoerr "Cannot install specific ref from source, sorry."
+    echoerr "For a list of available versions, see \`asdf list-all sqlite\`."
+    exit 1
+  fi
+
+  get_source ${version}
+  compile_source ${install_path}
+}
+
+install_sqlite "${ASDF_INSTALL_TYPE}" "${ASDF_INSTALL_VERSION}" "${ASDF_INSTALL_PATH}"
