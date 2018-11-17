@@ -2,6 +2,8 @@
 
 source "$(dirname "$0")/utils.sh"
 WORKING_DIR=${WORKING_DIR}
+SOURCE_DIR="${WORKING_DIR}/build"
+mkdir -p ${SOURCE_DIR}
 
 get_release_year () {
     local version=$1
@@ -35,21 +37,21 @@ get_source () {
 
     local sqlite_tarball="sqlite-autoconf-${long_version}.tar.gz"
 
-    cd ${WORKING_DIR}
-    curl --silent "https://www.sqlite.org/${release_year}/${sqlite_tarball}" --output "${sqlite_tarball}"
-    tar -xf ${sqlite_tarball}
+    curl --silent "https://www.sqlite.org/${release_year}/${sqlite_tarball}" --output "${WORKING_DIR}/${sqlite_tarball}"
+    tar -xf "${WORKING_DIR}/${sqlite_tarball}" --strip-components=1 -C ${SOURCE_DIR}
 }
 
 compile_source () {
     local install_path=$1
-    cd ${WORKING_DIR}
+    cd ${SOURCE_DIR}
     ./configure --prefix=${install_path}  # TODO: Add more options
     make
     make install
 }
 
 cleanup () {
-    rm -rf ${WORKING_DIR}
+    rm -rf ${WORKING_DIR} \
+           ${SOURCE_DIR}
 }
 
 install_sqlite () {
@@ -60,6 +62,12 @@ install_sqlite () {
   if [[ ${install_type} != 'version' ]]; then
     echoerr "Cannot install specific ref from source, sorry."
     echoerr "For a list of available versions, see \`asdf list-all sqlite\`."
+    exit 1
+  fi
+
+  all_versions=$(`dirname $0`/list-all)
+  if [[ "${all_versions}" != *"${version}"* ]]; then
+    echoerr "The given version (${version}) is not allowed"
     exit 1
   fi
 
