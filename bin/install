@@ -48,6 +48,10 @@ compile_source () {
     make install
 }
 
+cleanup () {
+    rm -rf ${WORKING_DIR}
+}
+
 install_sqlite () {
   local install_type=$1
   local version=$2
@@ -61,6 +65,7 @@ install_sqlite () {
 
   get_source ${version}
   compile_source ${install_path}
+  cleanup
 }
 
 install_sqlite "${ASDF_INSTALL_TYPE}" "${ASDF_INSTALL_VERSION}" "${ASDF_INSTALL_PATH}"
