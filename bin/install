@@ -44,9 +44,11 @@ get_source () {
 compile_source () {
     local install_path=$1
     cd ${SOURCE_DIR}
-    ./configure --prefix=${install_path}  # TODO: Add more options
-    make
-    make install
+    {
+        ./configure --prefix=${install_path} ;  # TODO: Add more options
+        make ;
+        make install ;
+    } >/dev/null
 }
 
 cleanup () {
