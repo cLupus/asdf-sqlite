@@ -1,4 +1,4 @@
-# asdf-nodejs
+# asdf-sqlite
 
 [![Build Status](https://travis-ci.org/cLupus/asdf-sqlite.svg?branch=master)](https://travis-ci.org/cLupus/asdf-sqlite)
 
@@ -14,7 +14,7 @@ Uses curl
 Install the plugin:
 
 ```bash
-asdf plugin-add nodejs https://github.com/cLupus/asdf-sqlite.git
+asdf plugin-add sqlite https://github.com/cLupus/asdf-sqlite.git
 ```
 
 ## Use
