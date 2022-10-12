@@ -14,7 +14,7 @@ Uses curl
 Install the plugin:
 
 ```bash
-asdf plugin-add sqlite https://github.com/cLupus/asdf-sqlite.git
+asdf plugin-add sqlite
 ```
 
 ## Use
