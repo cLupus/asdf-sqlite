@@ -1,6 +1,6 @@
 # asdf-sqlite
 
-[![Build Status](https://travis-ci.org/cLupus/asdf-sqlite.svg?branch=master)](https://travis-ci.org/cLupus/asdf-sqlite)
+[![Build Status](https://github.com/cLupus/asdf-sqlite/actions/workflows/build.yml/badge.svg)](https://github.com/cLupus/asdf-sqlite/actions/workflows/build.yml) [![Lint](https://github.com/cLupus/asdf-sqlite/actions/workflows/lint.yml/badge.svg)](https://github.com/cLupus/asdf-sqlite/actions/workflows/lint.yml)
 
 [SQLite](https://www.sqlite.org) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
