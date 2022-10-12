@@ -2,79 +2,28 @@
 set -euo pipefail
 
 source "$(dirname "$0")/utils.sh"
-WORKING_DIR=${WORKING_DIR}
-SOURCE_DIR="${WORKING_DIR}/build"
-mkdir -p ${SOURCE_DIR}
-
-get_release_year () {
-    local version=$1
-    get_sqlite_url releaselog/`echo ${version} | tr '.' '_'`.html \
-    | grep "<title>.*</title>" \
-    | sed -E 's|.*On ([0-9]{4})-.*|\1|g'
-}
-
-_add_padding () {
-    if [[ ${#1} == '1' ]]; then
-        printf '%d%02d' ${1}
-    fi
-    if [[ ${#1} == '2' ]]; then
-        printf '%d%01d' ${1}
-    fi
-}
-
-get_long_version () {
-    local version=$1
-    read -r major minor patch fix <<<$(echo ${version} | tr '.' ' ' )
-
-    echo "${major}`_add_padding ${minor}``_add_padding ${patch} `"
-}
-
-get_source () {
-    local version=$1
-    local long_version=`get_long_version ${version}`
-    local release_year=`get_release_year ${version}`
-
-    local sqlite_tarball="sqlite-autoconf-${long_version}.tar.gz"
-
-    curl --silent "https://www.sqlite.org/${release_year}/${sqlite_tarball}" --output "${WORKING_DIR}/${sqlite_tarball}"
-    tar -xf "${WORKING_DIR}/${sqlite_tarball}" --strip-components=1 -C ${SOURCE_DIR}
-}
 
 compile_source () {
     local install_path=$1
-    cd ${SOURCE_DIR}
+    cd "$ASDF_DOWNLOAD_PATH"
     {
-        ./configure --prefix=${install_path} ;  # TODO: Add more options
-        make ;
+        ./configure --prefix="$install_path" ;  # TODO: Add more options
+        make -j "$ASDF_CONCURRENCY" ;
         make install ;
     } >/dev/null
 }
 
-cleanup () {
-    rm -rf ${WORKING_DIR} \
-           ${SOURCE_DIR}
-}
-
 install_sqlite () {
-  local install_type=$1
-  local version=$2
-  local install_path=$3
+  local install_type="$1"
+  local install_path="$2"
 
-  if [[ ${install_type} != 'version' ]]; then
+  if [[ "$install_type" != 'version' ]]; then
     echoerr "Cannot install specific ref from source, sorry."
     echoerr "For a list of available versions, see \`asdf list-all sqlite\`."
     exit 1
   fi
 
-  all_versions=$(`dirname $0`/list-all)
-  if [[ "${all_versions}" != *"${version}"* ]]; then
-    echoerr "The given version (${version}) is not allowed"
-    exit 1
-  fi
-
-  get_source ${version}
   compile_source ${install_path}
-  cleanup
 }
 
-install_sqlite "${ASDF_INSTALL_TYPE}" "${ASDF_INSTALL_VERSION}" "${ASDF_INSTALL_PATH}"
+install_sqlite "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_PATH"
