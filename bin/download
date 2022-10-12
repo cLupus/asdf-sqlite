@@ -1,39 +1,47 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# shellcheck source=bin/utils.sh
 source "$(dirname "$0")/utils.sh"
 
-_add_padding () {
-    if [[ ${#1} == '1' ]]; then
-        printf '%d%02d' ${1}
-    fi
-    if [[ ${#1} == '2' ]]; then
-        printf '%d%01d' ${1}
-    fi
+_add_padding() {
+	if [[ ${#1} == '1' ]]; then
+		printf '%d%02d' "$1" ""
+	fi
+	if [[ ${#1} == '2' ]]; then
+		printf '%d%01d' "$1" ""
+	fi
 }
 
 get_release_year () {
-    local version=$1
+	local version=$1
     get_sqlite_url "releaselog/$(echo "$version" | tr '.' '_').html" \
     | grep "<title>.*</title>" \
     | sed -E 's|.*On ([0-9]{4})-.*|\1|g'
 }
 
-get_long_version () {
-    local version=$1
-    read -r major minor patch fix <<<"$(echo "$version" | tr '.' ' ' )"
+get_long_version() {
+	local version=$1
+    # shellcheck disable=SC2034
+	read -r major minor patch fix <<<"$(echo "$version" | tr '.' ' ')"
+    # TODO: Deal with fix
 
-    echo "${major}$(_add_padding "$minor")$(_add_padding "$patch" )"
+    echo "$major$(_add_padding "$minor")$(_add_padding "$patch")"
 }
 
 get_source () {
     local version=$1
-    local long_version="$(get_long_version $version)"
-    local release_year="$(get_release_year ${version})"
+    local long_version
+    long_version="$(get_long_version "$version")"
+    local release_year
+    release_year="$(get_release_year "$version")"
 
     local sqlite_tarball="sqlite-autoconf-$long_version.tar.gz"
+    local sqlite_url="https://www.sqlite.org/$release_year/$sqlite_tarball"
 
-    curl --silent "https://www.sqlite.org/$release_year/$sqlite_tarball" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
+    echo "Downloading sqlite from $sqlite_url"
+
+    curl --silent "$sqlite_url" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
     tar -xf "$ASDF_DOWNLOAD_PATH/$sqlite_tarball" --strip-components=1 -C "$ASDF_DOWNLOAD_PATH"
 }
 

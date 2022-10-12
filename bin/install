@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# shellcheck source=bin/utils.sh
 source "$(dirname "$0")/utils.sh"
 
 compile_source () {
@@ -23,7 +24,7 @@ install_sqlite () {
     exit 1
   fi
 
-  compile_source ${install_path}
+  compile_source "$install_path"
 }
 
 install_sqlite "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_PATH"
