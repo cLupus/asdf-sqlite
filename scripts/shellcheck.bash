@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
 exec shellcheck -s bash -x \
-  bin/* -P lib/
-  
+	bin/* -P lib/

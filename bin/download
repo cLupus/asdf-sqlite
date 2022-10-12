@@ -13,36 +13,36 @@ _add_padding() {
 	fi
 }
 
-get_release_year () {
+get_release_year() {
 	local version=$1
-    get_sqlite_url "releaselog/$(echo "$version" | tr '.' '_').html" \
-    | grep "<title>.*</title>" \
-    | sed -E 's|.*On ([0-9]{4})-.*|\1|g'
+	get_sqlite_url "releaselog/$(echo "$version" | tr '.' '_').html" |
+		grep "<title>.*</title>" |
+		sed -E 's|.*On ([0-9]{4})-.*|\1|g'
 }
 
 get_long_version() {
 	local version=$1
-    # shellcheck disable=SC2034
+	# shellcheck disable=SC2034
 	read -r major minor patch fix <<<"$(echo "$version" | tr '.' ' ')"
-    # TODO: Deal with fix
+	# TODO: Deal with fix
 
-    echo "$major$(_add_padding "$minor")$(_add_padding "$patch")"
+	echo "$major$(_add_padding "$minor")$(_add_padding "$patch")"
 }
 
-get_source () {
-    local version=$1
-    local long_version
-    long_version="$(get_long_version "$version")"
-    local release_year
-    release_year="$(get_release_year "$version")"
+get_source() {
+	local version=$1
+	local long_version
+	long_version="$(get_long_version "$version")"
+	local release_year
+	release_year="$(get_release_year "$version")"
 
-    local sqlite_tarball="sqlite-autoconf-$long_version.tar.gz"
-    local sqlite_url="https://www.sqlite.org/$release_year/$sqlite_tarball"
+	local sqlite_tarball="sqlite-autoconf-$long_version.tar.gz"
+	local sqlite_url="https://www.sqlite.org/$release_year/$sqlite_tarball"
 
-    echo "Downloading sqlite from $sqlite_url"
+	echo "Downloading sqlite from $sqlite_url"
 
-    curl --silent "$sqlite_url" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
-    tar -xf "$ASDF_DOWNLOAD_PATH/$sqlite_tarball" --strip-components=1 -C "$ASDF_DOWNLOAD_PATH"
+	curl --silent "$sqlite_url" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
+	tar -xf "$ASDF_DOWNLOAD_PATH/$sqlite_tarball" --strip-components=1 -C "$ASDF_DOWNLOAD_PATH"
 }
 
 get_source "$ASDF_INSTALL_VERSION"
