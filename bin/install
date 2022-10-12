@@ -1,29 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# shellcheck source=bin/utils.sh
 source "$(dirname "$0")/utils.sh"
 
-compile_source () {
-    local install_path=$1
-    cd "$ASDF_DOWNLOAD_PATH"
-    {
-        ./configure --prefix="$install_path" ;  # TODO: Add more options
-        make -j "$ASDF_CONCURRENCY" ;
-        make install ;
-    } >/dev/null
+compile_source() {
+	local install_path=$1
+	cd "$ASDF_DOWNLOAD_PATH"
+	{
+		./configure --prefix="$install_path" # TODO: Add more options
+		make -j "$ASDF_CONCURRENCY"
+		make install
+	} >/dev/null
 }
 
-install_sqlite () {
-  local install_type="$1"
-  local install_path="$2"
+install_sqlite() {
+	local install_type="$1"
+	local install_path="$2"
 
-  if [[ "$install_type" != 'version' ]]; then
-    echoerr "Cannot install specific ref from source, sorry."
-    echoerr "For a list of available versions, see \`asdf list-all sqlite\`."
-    exit 1
-  fi
+	if [[ "$install_type" != 'version' ]]; then
+		echoerr "Cannot install specific ref from source, sorry."
+		echoerr "For a list of available versions, see \`asdf list-all sqlite\`."
+		exit 1
+	fi
 
-  compile_source ${install_path}
+	compile_source "$install_path"
 }
 
 install_sqlite "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_PATH"
