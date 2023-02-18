@@ -7,7 +7,15 @@
 
 ## Requirements
 
-Uses curl
+It uses curl, C compiler & dev tools and file. In Ubuntu or similar Debian systems:
+```bash
+apt install curl build-essential file
+```
+
+In Dockerfile:
+```dockerfile
+RUN DEBIAN_FRONTEND=noninteractive apt install -y curl build-essential file
+```
 
 ## Install
 
