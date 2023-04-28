@@ -9,7 +9,7 @@ compile_source() {
 	cd "$ASDF_DOWNLOAD_PATH"
 	{
 		./configure --prefix="$install_path" # TODO: Add more options
-		make -j "$ASDF_CONCURRENCY"
+		make -j "${ASDF_CONCURRENCY:-1}"
 		make install
 	} >/dev/null
 }
