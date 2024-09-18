@@ -39,7 +39,7 @@ get_source() {
 	local sqlite_tarball="sqlite-autoconf-$long_version.tar.gz"
 	local sqlite_url="https://www.sqlite.org/$release_year/$sqlite_tarball"
 
-	echo "Downloading sqlite from $sqlite_url"
+	echo "downloading sqlite source code; url=$sqlite_url; destDir=$ASDF_DOWNLOAD_PATH"
 
 	curl --silent "$sqlite_url" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
 	tar -xf "$ASDF_DOWNLOAD_PATH/$sqlite_tarball" --strip-components=1 -C "$ASDF_DOWNLOAD_PATH"
