@@ -24,6 +24,7 @@ install_sqlite() {
 		exit 1
 	fi
 
+	echo "configure && compile && make install: this might take a minute; buildDir=$ASDF_DOWNLOAD_PATH; installDir=${install_path}"
 	compile_source "$install_path"
 }
 
