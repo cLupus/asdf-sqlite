@@ -41,7 +41,7 @@ get_source() {
 
 	echo "downloading sqlite source code; url=$sqlite_url; destDir=$ASDF_DOWNLOAD_PATH"
 
-	curl --silent "$sqlite_url" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
+	curl -L --silent "$sqlite_url" --output "$ASDF_DOWNLOAD_PATH/$sqlite_tarball"
 	tar -xf "$ASDF_DOWNLOAD_PATH/$sqlite_tarball" --strip-components=1 -C "$ASDF_DOWNLOAD_PATH"
 }
 
