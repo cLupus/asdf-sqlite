@@ -16,5 +16,5 @@ echoerr() {
 }
 
 get_sqlite_url() {
-	curl --silent "$SQLITE_URL/$1"
+	curl -L --silent "$SQLITE_URL/$1"
 }
