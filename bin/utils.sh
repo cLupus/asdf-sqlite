@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ "${TRACE:-}" == "1" ]]; then
+	set -x
+fi
+
 export SQLITE_URL="https://www.sqlite.org"
 #export SQLITE_HISTORY_URL="${SQLITE_URL}/chronology.html"
 
