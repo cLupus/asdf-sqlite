@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: asdf-vm/actions/install@v4
+      - uses: asdf-vm/actions/install@v3
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
