@@ -13,19 +13,9 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          #- macos-latest
+          - macos-latest
     runs-on: ${{ matrix.os }}
-    env:
-      TRACE: "1"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: asdf-vm/actions/install@v3
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-
       - name: asdf_plugin_test
         uses: asdf-vm/actions/plugin-test@v3
         with:
