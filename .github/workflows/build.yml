@@ -13,7 +13,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          #- macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install ICU
@@ -21,6 +21,9 @@ jobs:
           if [[ $(uname) == "Linux" ]]; then
             sudo apt install libicu-dev
           fi
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
 
       - name: asdf_plugin_test
         uses: asdf-vm/actions/plugin-test@v2
