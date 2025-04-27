@@ -19,7 +19,7 @@ jobs:
       - name: Install ICU
         run: |
           if [[ $(uname) == "Linux" ]]; then
-            apt install libicu-dev
+            sudo apt install libicu-dev
           fi
 
       - name: asdf_plugin_test
