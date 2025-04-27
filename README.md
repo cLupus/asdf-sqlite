@@ -25,6 +25,13 @@ Install the plugin:
 asdf plugin-add sqlite
 ```
 
+### Compilation options
+
+By default, SQLite will be compiled with most of [the recommended compile-time options](https://sqlite.org/compile.html#recommended_compile_time_options) are enabled.
+Additionally, multiple [optional features](https://sqlite.org/compile.html#_options_to_enable_features_normally_turned_off) are enabled to amke SQLite mure useful.
+
+If you would like to override the compile options, you may set the environment variable `ASDF_SQLITE_ENABLED_FEATURES` as desired.
+
 ## Use
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to install & manage versions of SQLite.

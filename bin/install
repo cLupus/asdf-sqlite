@@ -16,9 +16,50 @@ jobs() {
 
 compile_source() {
 	local install_path=$1
+	local gcc_options="-Os"
+	# These are the compile options by SQLite (https://www.sqlite.org/compile.html)
+	# except for these options, which I find might limit the use-cases of the asdf-sqlite plugin
+	# * SQLITE_THREADSAFE=0 (when I can't make assumptions on how people will use the plugin, I find it safer to enable thread safety)
+	# * SQLITE_DEFAULT_MEMSTATUS=0
+	# * SQLITE_LIKE_DOESNT_MATCH_BLOBS
+	# * SQLITE_OMIT_DECLTYPE
+	# * SQLITE_OMIT_PROGRESS_CALLBACK
+	# * SQLITE_OMIT_AUTOINIT
+	local recommended_options="
+		-DSQLITE_DQS=0
+		-DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1
+		-DSQLITE_MAX_EXPR_DEPTH=0
+		-DSQLITE_OMIT_DEPRECATED
+		-DSQLITE_OMIT_SHARED_CACHE
+		-DSQLITE_USE_ALLOCA
+		-DSQLITE_STRICT_SUBTYPE=1
+	"
+	local default_features="
+		-DSQLITE_ENABLE_API_ARMOR
+		-DSQLITE_ENABLE_BATCH_ATOMIC_WRITE
+		-DSQLITE_ENABLE_BYTECODE_VTAB
+		-DSQLITE_ENABLE_COLUMN_METADATA
+		-DSQLITE_ENABLE_DBSTAT_VTAB
+		-DSQLITE_ENABLE_FTS5
+		-DSQLITE_ENABLE_GEOPOLY
+		-DSQLITE_ENABLE_JSON1
+		-DSQLITE_ENABLE_RTREE
+		-DSQLITE_ENABLE_STAT4
+		-DSQLITE_ENABLE_UPDATE_DELETE_LIMIT
+	"
+	# SQLITE_ENABLE_JSON1 is added to enable JSON for versions older than 3.38.0
+	# SQLITE_ENABLE_STAT4 is chosen instead of SQLITE_ENABLE_QPSG because the use case of asdf-sqlite is mostly
+	#                     concerned with running locally on a developer's machin rather than in production
+	local enabled_features="${ASDF_SQLITE_ENABLED_FEATURES:-$default_features}"
+	local DEFAULT_OPTIONS="$gcc_options $recommended_options $enabled_features"
 	cd "$ASDF_DOWNLOAD_PATH"
 	{
-		./configure --prefix="$install_path" # TODO: Add more options
+		local cflags
+		cflags="${CFLAGS:-$DEFAULT_OPTIONS}"
+		cflags="$(echo "$cflags" | tr -d '\n' | sed -E 's/[ \t]+/ /g')"
+		CFLAGS="$cflags" \
+			./configure \
+			--prefix="$install_path"
 		make -j "$(jobs)"
 		make install
 	} >/dev/null
