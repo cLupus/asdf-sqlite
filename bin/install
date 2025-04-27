@@ -4,12 +4,22 @@ set -euo pipefail
 # shellcheck source=bin/utils.sh
 source "$(dirname "$0")/utils.sh"
 
+# Guess a good number for make -j<N>
+jobs() {
+	{
+		nproc ||
+			sysctl -n hw.ncpu ||
+			getconf _NPROCESSORS_ONLN ||
+			echo 1
+	} 2>/dev/null
+}
+
 compile_source() {
 	local install_path=$1
 	cd "$ASDF_DOWNLOAD_PATH"
 	{
 		./configure --prefix="$install_path" # TODO: Add more options
-		make -j "${ASDF_CONCURRENCY:-1}"
+		make -j "$(jobs)"
 		make install
 	} >/dev/null
 }
