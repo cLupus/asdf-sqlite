@@ -12,6 +12,8 @@ It uses curl, C compiler & dev tools and file. In Ubuntu or similar Debian syste
 apt install curl build-essential file
 ```
 
+If [ICU](https://icu.unicode.org/) headers (e.g. [`libicu-dev`](https://packages.debian.org/sid/libicu-dev)) are available, SQLite will be compiled with `-DSQLITE_ENABLE_ICU`.
+
 In Dockerfile:
 ```dockerfile
 RUN DEBIAN_FRONTEND=noninteractive apt install -y curl build-essential file
